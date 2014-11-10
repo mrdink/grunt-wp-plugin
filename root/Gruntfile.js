@@ -157,25 +157,30 @@ module.exports = function(grunt) {
 			}
 		},
 		clean: {
-			main: ['release/<%= pkg.version %>']
+			main: [
+        'assets/css/*.{css,map}',
+        'release'
+      ]
 		},
 		copy: {
 			// Copy the plugin to a versioned release directory
 			main: {
 				src: [
 					'**',
-					'!node_modules/**',
-					'!release/**',
-					'!.git/**',
-					'!.sass-cache/**',
-					'!css/src/**',
-					'!js/src/**',
-					'!sass/**',
-					'!img/src/**',
-					'!Gruntfile.js',
-					'!package.json',
-					'!.gitignore',
-					'!.gitmodules'
+          '!bower_components/**',
+          '!bower.json',
+          '!node_modules/**',
+          '!release/**',
+          '!.git/**',
+          '!.sass-cache/**',
+          '!assets/img/src/**',
+          '!assets/sass/**',
+          '!assets/js/src/**',
+          '!assets/img/src/**',
+          '!Gruntfile.js',
+          '!package.json',
+          '!.gitignore',
+          '!.gitmodules'
 				],
 				dest: 'release/<%= pkg.version %>/'
 			}
@@ -228,29 +233,28 @@ module.exports = function(grunt) {
 	});
 
 	// Register tasks
-	grunt.registerTask('default', [
-		'stylesheets',
-		'scripts',
-	]);
-	grunt.registerTask('stylesheets', [
-		'sass',
-		'autoprefixer',
-		'csscomb',
-		'cssmin',
-		'notify:stylesheets'
-	]);
-	grunt.registerTask('scripts', [
-		'jshint',
-		'concat',
-		'uglify',
-		'notify:scripts'
-	]);
-	grunt.registerTask('build', [
-		'default',
-		'clean',
-		'imagemin',
-		'copy',
-		'compress',
-		'notify:build'
-	]);
+  grunt.registerTask('default', [
+    'stylesheets',
+    'scripts',
+  ]);
+  grunt.registerTask('stylesheets', [
+    'sass',
+    'autoprefixer',
+    'csscomb',
+    'cssmin',
+    'notify:stylesheets'
+  ]);
+  grunt.registerTask('scripts', [
+    'jshint',
+    'concat',
+    'uglify',
+    'notify:scripts'
+  ]);
+  grunt.registerTask('build', [
+    'clean',
+    'default',
+    'copy',
+    'compress',
+    'notify:build'
+  ]);
 };
