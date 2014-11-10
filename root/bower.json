@@ -1,0 +1,20 @@
+{
+  "name": "{%= prefix %}",
+  "title": "{%= title %}",
+  "description": "{%= description %}",
+  "version": "0.1.0",
+  "homepage": "{%= homepage %}",
+  "author": {
+    "name": "{%= author_name %}",
+    "email": "{%= author_email %}",
+    "url": "{%= author_url %}"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "bourbon": "~4.0.2"
+  }
+}

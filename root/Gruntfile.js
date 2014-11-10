@@ -1,8 +1,11 @@
-module.exports = function( grunt ) {
+module.exports = function(grunt) {
+	// Load all tasks
+	require('load-grunt-tasks')(grunt);
+	// Show elapsed time
+	require('time-grunt')(grunt);
 
-	// Project configuration
-	grunt.initConfig( {
-		pkg:    grunt.file.readJSON( 'package.json' ),
+	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
 		concat: {
 			options: {
 				stripBanners: true,
@@ -12,7 +15,8 @@ module.exports = function( grunt ) {
 					' * Licensed GPLv2+' +
 					' */\n'
 			},
-			{%= js_safe_name %}: {
+			{ %= js_safe_name %
+			}: {
 				src: [
 					'assets/js/src/{%= js_safe_name %}.js'
 				],
@@ -26,21 +30,22 @@ module.exports = function( grunt ) {
 				'assets/js/test/**/*.js'
 			],
 			options: {
-				curly:   true,
-				eqeqeq:  true,
-				immed:   true,
+				curly: true,
+				eqeqeq: true,
+				immed: true,
 				latedef: true,
-				newcap:  true,
-				noarg:   true,
-				sub:     true,
-				undef:   true,
-				boss:    true,
-				eqnull:  true,
+				newcap: true,
+				noarg: true,
+				sub: true,
+				undef: true,
+				boss: true,
+				eqnull: true,
 				globals: {
 					exports: true,
-					module:  false
+					module: false,
+					require: false
 				}
-			}		
+			}
 		},
 		uglify: {
 			all: {
@@ -59,26 +64,45 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		test:   {
+		test: {
 			files: ['assets/js/test/**/*.js']
 		},
-		{% if ('sass' === css_type) { %}
-		sass:   {
-			all: {
+		sass: {
+			options: {
+				includePaths: [
+					'bower_components/bourbon/dist'
+				]
+			},
+			dev: {
+				options: {
+					style: 'expanded'
+				},
 				files: {
-					'assets/css/{%= js_safe_name %}.css': 'assets/css/sass/{%= js_safe_name %}.scss'
+					'assets/css/{%= js_safe_name %}.css': 'assets/sass/{%= js_safe_name %}.scss'
 				}
 			}
 		},
-		{% } else if ('less' === css_type) { %}
-		less:   {
-			all: {
-				files: {
-					'assets/css/{%= js_safe_name %}.css': 'assets/css/less/{%= js_safe_name %}.less'
-				}
-			}		
+		autoprefixer: {
+			options: {
+				browsers: ['last 2 versions', 'ie 8', 'ie 9', 'android 2.3', 'android 4', 'opera 12']
+			},
+			dev: {
+				options: {
+					map: {
+						prev: 'assets/css/'
+					}
+				},
+				src: 'assets/css/{%= js_safe_name %}.css'
+			}
 		},
-		{% } %}
+		csscomb: {
+			options: {
+				config: '.csscomb.json'
+			},
+			files: {
+				'assets/css/{%= js_safe_name %}.css': ['assets/css/{%= js_safe_name %}.css'],
+			}
+		},
 		cssmin: {
 			options: {
 				banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
@@ -89,19 +113,34 @@ module.exports = function( grunt ) {
 			},
 			minify: {
 				expand: true,
-				{% if ('sass' === css_type || 'less' === css_type) { %}
-				cwd: 'assets/css/',				
+				cwd: 'assets/css/',
 				src: ['{%= js_safe_name %}.css'],
-				{% } else { %}
-				cwd: 'assets/css/src/',
-				src: ['{%= js_safe_name %}.css'],
-				{% } %}
 				dest: 'assets/css/',
 				ext: '.min.css'
 			}
 		},
-		watch:  {
-			{% if ('sass' === css_type) { %}
+		imagemin: {
+			dist: {
+				files: [{
+					progressive: true,
+					expand: true,
+					cwd: 'assets/img/',
+					src: ['**/*.{png,jpg,gif}'],
+					dest: 'assets/img/'
+				}]
+			}
+		},
+		// https://www.npmjs.org/package/grunt-wp-i18n
+		makepot: {
+			target: {
+				options: {
+					domainPath: '/languages/',
+					potFilename: '{%= js_safe_name %}.pot',
+					type: 'wp-plugin'
+				}
+			}
+		},
+		watch: {
 			sass: {
 				files: ['assets/css/sass/*.scss'],
 				tasks: ['sass', 'cssmin'],
@@ -109,23 +148,6 @@ module.exports = function( grunt ) {
 					debounceDelay: 500
 				}
 			},
-			{% } else if ('less' === css_type) { %}
-			less: {
-				files: ['assets/css/less/*.less'],
-				tasks: ['less', 'cssmin'],
-				options: {
-					debounceDelay: 500
-				}
-			},
-			{% } else { %}
-			styles: {
-				files: ['assets/css/src/*.css'],
-				tasks: ['cssmin'],
-				options: {
-					debounceDelay: 500
-				}
-			},
-			{% } %}
 			scripts: {
 				files: ['assets/js/src/**/*.js', 'assets/js/vendor/**/*.js'],
 				tasks: ['jshint', 'concat', 'uglify'],
@@ -140,7 +162,7 @@ module.exports = function( grunt ) {
 		copy: {
 			// Copy the plugin to a versioned release directory
 			main: {
-				src:  [
+				src: [
 					'**',
 					'!node_modules/**',
 					'!release/**',
@@ -148,6 +170,7 @@ module.exports = function( grunt ) {
 					'!.sass-cache/**',
 					'!css/src/**',
 					'!js/src/**',
+					'!sass/**',
 					'!img/src/**',
 					'!Gruntfile.js',
 					'!package.json',
@@ -155,7 +178,7 @@ module.exports = function( grunt ) {
 					'!.gitmodules'
 				],
 				dest: 'release/<%= pkg.version %>/'
-			}		
+			}
 		},
 		compress: {
 			main: {
@@ -167,35 +190,67 @@ module.exports = function( grunt ) {
 				cwd: 'release/<%= pkg.version %>/',
 				src: ['**/*'],
 				dest: '{%= js_safe_name %}/'
-			}		
+			}
+		},
+		devUpdate: {
+			main: {
+				options: {
+					updateType: 'report',
+					reportUpdated: false,
+					semver: true,
+					packages: {
+						devDependencies: true,
+						dependencies: false
+					}
+				}
+			}
+		},
+		notify: {
+			stylesheets: {
+				options: {
+					title: 'Grunt, grunt!',
+					message: 'Sass is Sassy'
+				}
+			},
+			scripts: {
+				options: {
+					title: 'Grunt, grunt!',
+					message: 'JS is all good'
+				}
+			},
+			build: {
+				options: {
+					title: 'Grunt, grunt!',
+					message: 'We\'ll do it live!'
+				}
+			}
 		}
-	} );
-	
-	// Load other tasks
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	{% if ('sass' === css_type) { %}
-	grunt.loadNpmTasks('grunt-contrib-sass');
-	{% } else if ('less' === css_type) { %}
-	grunt.loadNpmTasks('grunt-contrib-less');
-	{% } %}
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks( 'grunt-contrib-clean' );
-	grunt.loadNpmTasks( 'grunt-contrib-copy' );
-	grunt.loadNpmTasks( 'grunt-contrib-compress' );
-	
-	// Default task.
-	{% if ('sass' === css_type) { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'sass', 'cssmin'] );
-	{% } else if ('less' === css_type) { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'less', 'cssmin'] );
-	{% } else { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'cssmin'] );
-	{% } %}
-	
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
+	});
 
-	grunt.util.linefeed = '\n';
+	// Register tasks
+	grunt.registerTask('default', [
+		'stylesheets',
+		'scripts',
+	]);
+	grunt.registerTask('stylesheets', [
+		'sass',
+		'autoprefixer',
+		'csscomb',
+		'cssmin',
+		'notify:stylesheets'
+	]);
+	grunt.registerTask('scripts', [
+		'jshint',
+		'concat',
+		'uglify',
+		'notify:scripts'
+	]);
+	grunt.registerTask('build', [
+		'default',
+		'clean',
+		'imagemin',
+		'copy',
+		'compress',
+		'notify:build'
+	]);
 };

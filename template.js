@@ -21,43 +21,47 @@ exports.after = '';
 exports.warnOn = '*';
 
 // The actual init template
-exports.template = function( grunt, init, done ) {
-	init.process( {}, [
+exports.template = function(grunt, init, done) {
+	init.process({}, [
 		// Prompt for these values.
-		init.prompt( 'title', 'WP Plugin' ),
-		{
-			name   : 'prefix',
+		init.prompt('title', 'WP Plugin'), {
+			name: 'prefix',
 			message: 'PHP function prefix (alpha and underscore characters only)',
 			default: 'wpplugin'
 		},
-		init.prompt( 'description', 'The best WordPress extension ever made!' ),
-		init.prompt( 'homepage', 'http://wordpress.org/plugins' ),
-		init.prompt( 'author_name' ),
-		init.prompt( 'author_email' ),
-		init.prompt( 'author_url' ),
-		{
-			name: 'css_type',
-			message: 'CSS Preprocessor: Will you use "Sass", "LESS", or "none" for CSS with this project?',
-			default: 'Sass'
-		}
-	], function( err, props ) {
+		init.prompt('description', 'The best WordPress extension ever made!'),
+		init.prompt('homepage', 'http://wordpress.org/plugins'),
+		init.prompt('author_name'),
+		init.prompt('author_email'),
+		init.prompt('author_url'),
+	], function(err, props) {
 		props.keywords = [];
 		props.version = '0.1.0';
 		props.devDependencies = {
-			'grunt': '~0.4.1',
-			'grunt-contrib-concat':   '~0.1.2',
-			'grunt-contrib-uglify':   '~0.1.1',
-			'grunt-contrib-cssmin':   '~0.6.0',
-			'grunt-contrib-jshint':   '~0.1.1',
-			'grunt-contrib-nodeunit': '~0.1.2',
-			'grunt-contrib-watch':    '~0.2.0',
-			'grunt-contrib-clean':    '~0.5.0',
-			'grunt-contrib-copy':     '~0.4.1',
-			'grunt-contrib-compress': '~0.5.2'
+			"grunt": "~0.4.1",
+			"grunt-autoprefixer": "~1.0.1",
+			"grunt-contrib-clean": "^0.6.0",
+			"grunt-contrib-compress": "^0.12.0",
+			"grunt-contrib-concat": "^0.5.0",
+			"grunt-contrib-copy": "^0.7.0",
+			"grunt-contrib-cssmin": "^0.10.0",
+			"grunt-contrib-jshint": "^0.10.0",
+			"grunt-contrib-nodeunit": "^0.4.1",
+			"grunt-contrib-uglify": "^0.6.0",
+			"grunt-contrib-watch": "^0.6.1",
+			"grunt-csscomb": "^3.0.0",
+			"grunt-dev-update": "^1.0.1",
+			"grunt-notify": "^0.4.1",
+			"grunt-sass": "^0.16.1",
+			"grunt-contrib-imagemin": "^0.9.1",
+			"grunt-wp-i18n": "^0.4.9",
+			"load-grunt-tasks": "^1.0.0",
+			"node-sass": "^1.2.1",
+			"time-grunt": "^1.0.0"
 		};
-		
+
 		// Sanitize names where we need to for PHP/JS
-		props.name = props.title.replace( /\s+/g, '-' ).toLowerCase();
+		props.name = props.title.replace(/\s+/g, '-').toLowerCase();
 		// Development prefix (i.e. to prefix PHP function names, variables)
 		props.prefix = props.prefix.replace('/[^a-z_]/i', '').toLowerCase();
 		// Development prefix in all caps (e.g. for constants)
@@ -69,41 +73,16 @@ exports.template = function( grunt, init, done ) {
 		props.js_safe_name_caps = props.js_safe_name.toUpperCase();
 
 		// Files to copy and process
-		var files = init.filesToCopy( props );
+		var files = init.filesToCopy(props);
 
-		switch( props.css_type.toLowerCase()[0] ) {
-			case 'l':
-				delete files[ 'assets/css/sass/' + props.js_safe_name + '.scss'];
-				delete files[ 'assets/css/src/' + props.js_safe_name + '.css' ];
-				
-				props.devDependencies["grunt-contrib-less"] = "~0.5.0";
-				props.css_type = 'less';
-				break;
-			case 'n':
-			case undefined:
-				delete files[ 'assets/css/less/' + props.js_safe_name + '.less'];
-				delete files[ 'assets/css/sass/' + props.js_safe_name + '.scss'];
-				
-				props.css_type = 'none';
-				break;
-			// SASS is the default
-			default:
-				delete files[ 'assets/css/less/' + props.js_safe_name + '.less'];
-				delete files[ 'assets/css/src/' + props.js_safe_name + '.css' ];
-				
-				props.devDependencies["grunt-contrib-sass"] = "~0.2.2";
-				props.css_type = 'sass';
-				break;
-		}
-		
-		console.log( files );
-		
+		console.log(files);
+
 		// Actually copy and process files
-		init.copyAndProcess( files, props );
-		
+		init.copyAndProcess(files, props);
+
 		// Generate package.json file
-		init.writePackageJSON( 'package.json', props );
-		
+		init.writePackageJSON('package.json', props);
+
 		// Done!
 		done();
 	});

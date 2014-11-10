@@ -46,7 +46,6 @@ After running the init command above, you will be presented with a standard dire
     .. .. /css
     .. .. .. /src
     .. .. .. /sass
-    .. .. .. /less
     .. .. /js
     .. .. .. /src
     .. /images
@@ -59,14 +58,6 @@ After running the init command above, you will be presented with a standard dire
     .. plugin.php
     .. readme.php
 
-### CSS vs Sass vs LESS
-
-Depending on how you answer the prompt regarding the use of a preprocessor, you will either have a `/src` directory (CSS), a `/sass` directory (Sass), or a `/less` directory (LESS) under your normal `/css` directory.  The goal here is that you only ever edit files in the related source directory and Grunt will automatically build and minify your final stylesheets directly in `/css`.
-
-If you're using Sass or Less, the raw files will be processed into `/css/filename.css` and minified into `/css/filename.min.css`.
-
-If you're using vanilla CSS, the source files will be minified into `/css/filename.min.css`.
-
 ### JavaScript
 
 You should only ever be modifying script files in the `/js/src` directory.  Grunt will automatically concatenate and minify your scripts into `/js/filename.js` and `/js/filename.min.js`.  These generated files should never be modified directly.
@@ -74,14 +65,3 @@ You should only ever be modifying script files in the `/js/src` directory.  Grun
 ### Images
 
 The `/images/src` directory exists only to allow you to keep track of source files (like PSDs or separate images that have been merged into sprites).  This helps keep source files under version control, and allows you to bundle them with the distribution of your new GPL plugin.
-
-## Release History
-
- * 2013-08-15   v0.1.7   Fix a typo in rename.json.
- * 2013-08-13   v0.1.6   Add deployment builder. Remove dates from Grunt headers.
- * 2013-07-18	v0.1.5	 Remove /extend references (props @trepmal).
- * 2013-05-30   v0.1.4   Fix broken package.json generator.
- * 2013-05-06   v0.1.3   Several I18N updates (props @bradyvercher)
- * 2013-04-29   v0.1.2   Folder restructuring and renaming.
- * 2013-04-26   v0.1.1   Minor bug fixes.
- * 2013-04-25   v0.1.0   Initial public release.
