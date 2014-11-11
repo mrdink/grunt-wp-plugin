@@ -234,6 +234,7 @@ module.exports = function(grunt) {
 
 	// Register tasks
   grunt.registerTask('default', [
+  	'clean',
     'stylesheets',
     'scripts',
   ]);
@@ -251,7 +252,6 @@ module.exports = function(grunt) {
     'notify:scripts'
   ]);
   grunt.registerTask('build', [
-    'clean',
     'default',
     'copy',
     'compress',
